@@ -3,16 +3,25 @@
 from app.infrastructure.db import db
 from datetime import datetime
 
+
 class Order(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    __tablename__ = 'orders'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     total_amount = db.Column(db.Float, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    razorpay_order_id = db.Column(db.String(255), nullable=True)  # To store Razorpay Order ID
+    status = db.Column(db.String(50), default="pending")  # Track order status like 'paid', 'pending', etc.
+
     items = db.relationship('OrderItem', backref='order', lazy=True)
 
+
 class OrderItem(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    order_id = db.Column(db.Integer, db.ForeignKey('order.id'), nullable=False)
+    __tablename__ = 'order_items'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    order_id = db.Column(db.Integer, db.ForeignKey('orders.id'), nullable=False)
     menu_item_id = db.Column(db.Integer, db.ForeignKey('menu_item.id'), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Float, nullable=False)

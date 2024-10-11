@@ -1,0 +1,3 @@
+flask db init
+flask db migrate -m "create orders and order_items tables"
+flask db upgrade

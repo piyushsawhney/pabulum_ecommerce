@@ -1,4 +1,7 @@
-Flask
-Flask-SQLAlchemy
-Flask-Migrate
-marshmallow
+Flask==2.2.5
+SQLAlchemy==2.0.16
+marshmallow==3.14.1
+razorpay==1.3.0
+setuptools
+pymysql
+cryptography
