@@ -2,6 +2,8 @@
 
 from flask import Flask
 from app.api.user_routes import user_bp
+from app.api.menu_routes import menu_bp
+from app.api.cart_routes import cart_bp
 from app.infrastructure.db import db
 from config import Config
 
@@ -11,6 +13,8 @@ def create_app():
     app.config.from_object(Config)
     db.init_app(app)
     app.register_blueprint(user_bp)
+    app.register_blueprint(menu_bp)
+    app.register_blueprint(cart_bp)
 
     with app.app_context():
         db.create_all()  # Create database tables
