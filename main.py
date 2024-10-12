@@ -3,10 +3,10 @@
 from flask import Flask
 from flask_migrate import Migrate
 
-from app.api.user_routes import user_bp
-from app.api.menu_routes import menu_bp
 from app.api.cart_routes import cart_bp
+from app.api.menu_routes import menu_bp
 from app.api.order_routes import order_bp
+from app.api.user_routes import user_bp
 from app.infrastructure.db import db
 from config import Config
 

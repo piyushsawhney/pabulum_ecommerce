@@ -5,3 +5,4 @@ razorpay==1.3.0
 setuptools
 pymysql
 cryptography
+flask_migrate
