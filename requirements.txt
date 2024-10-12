@@ -6,3 +6,6 @@ setuptools
 pymysql
 cryptography
 flask_migrate
+flask-bcrypt
+python-dotenv
+PyJWT

@@ -12,7 +12,7 @@ from config import Config
 
 
 class OrderService:
-    razorpay_client = razorpay.Client(auth=(Config.RAZORPAY_KEY_ID, Config.RAZORPAY_KEY_SECRET))
+    # razorpay_client = razorpay.Client(auth=(Config.RAZORPAY_KEY_ID, Config.RAZORPAY_KEY_SECRET))
 
     @staticmethod
     def checkout(user_id):
@@ -43,12 +43,12 @@ class OrderService:
         # Convert the amount to paise (since Razorpay deals with the smallest currency unit)
         amount_in_paise = int(total_amount * 100)
 
-        # Create Razorpay order
-        payment_order = OrderService.razorpay_client.order.create({
-            'amount': amount_in_paise,
-            'currency': 'INR',
-            'payment_capture': 1  # Auto capture payment
-        })
+        # # Create Razorpay order
+        # payment_order = OrderService.razorpay_client.order.create({
+        #     'amount': amount_in_paise,
+        #     'currency': 'INR',
+        #     'payment_capture': 1  # Auto capture payment
+        # })
 
         # Create a local order in the database
         order = Order(user_id=user_id, total_amount=total_amount)
@@ -65,7 +65,7 @@ class OrderService:
         # Return the order details along with the Razorpay order ID
         return {
             'order': order,
-            'razorpay_order_id': payment_order['id'],
+            # 'razorpay_order_id': payment_order['id'],
             'total_amount': total_amount
         }
 

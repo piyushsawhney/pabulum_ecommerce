@@ -23,7 +23,7 @@ class MenuService:
         item = MenuItemRepository.get_by_id(item_id)
         if item:
             if name:
-                item.name = name
+                item.username = name
             if description:
                 item.description = description
             if price is not None:

@@ -49,7 +49,7 @@ def update_menu_item(item_id):
     try:
         update_data = schema.load(request.json)
         menu_item = MenuService.update_menu_item(item_id, **update_data)
-        return jsonify({"message": "Menu item updated successfully!", "item": {"id": menu_item.id, "name": menu_item.name, "description": menu_item.description, "price": menu_item.price}}), 200
+        return jsonify({"message": "Menu item updated successfully!", "item": {"id": menu_item.id, "name": menu_item.name   , "description": menu_item.description, "price": menu_item.price}}), 200
     except ValidationError as err:
         return jsonify(err.messages), 400
     except ValueError as e:

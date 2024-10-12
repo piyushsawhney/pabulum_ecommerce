@@ -1,47 +1,72 @@
 # app/api/user_routes.py
 
 from flask import Blueprint, request, jsonify
-from marshmallow import Schema, fields, ValidationError
+from marshmallow import ValidationError
+
+from app.api.schemas import RegisterSchema, LoginSchema
+from app.application.auth_service import AuthService
 from app.application.user_service import UserService
 
 user_bp = Blueprint('user', __name__)
 
-class UserSchema(Schema):
-    username = fields.Str(required=True)
-    email = fields.Email(required=True)
-    password = fields.Str(required=True)
 
-class LoginSchema(Schema):
-    username_or_email = fields.Str(required=True)
-    password = fields.Str(required=True)
-
-@user_bp.route('/register', methods=['POST'])
+@user_bp.route('/user/register', methods=['POST'])
 def register():
-    schema = UserSchema()
     try:
-        user_data = schema.load(request.json)
+        data = RegisterSchema().load(request.json)
+    except ValidationError as err:
+        return jsonify({"error": err.messages}), 400
+
+    username = data.get('username')
+    email = data.get('email')
+    password = data.get('password')
+    role = data.get('role', 'Customer')
+
+    try:
         user = UserService.register_user(
-            username=user_data['username'],
-            email=user_data['email'],
-            password=user_data['password']
+            username=username,
+            email=email,
+            password=password
         )
-        return jsonify({"message": "User registered successfully!", "user_id": user.id}), 201
+        return jsonify({
+            "message": "User registered successfully!",
+            "user": {
+                "id": user.id,
+                "name": user.username,
+                "email": user.email,
+                "role": user.role
+            }
+        }), 200
     except ValidationError as err:
         return jsonify(err.messages), 400
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
 
-@user_bp.route('/login', methods=['POST'])
+
+@user_bp.route('/user/login', methods=['POST'])
 def login():
     schema = LoginSchema()
     try:
         login_data = schema.load(request.json)
-        user = UserService.login_user(
-            username_or_email=login_data['username_or_email'],
+        token = UserService.login_user(
+            email=login_data['email'],
             password=login_data['password']
         )
-        return jsonify({"message": "Login successful!", "user_id": user.id}), 200
+        return jsonify({"message": "Login successful!", "tokens": token}), 200
     except ValidationError as err:
         return jsonify(err.messages), 400
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
+
+
+@user_bp.route('/user/refresh', methods=['POST'])
+def refresh_token():
+    refresh_token = request.json.get('refresh_token')
+    try:
+        decoded_payload = AuthService.decode_jwt(refresh_token)
+        new_access_token = AuthService.generate_jwt(decoded_payload["user_id"], decoded_payload["role"])
+        return jsonify({
+            "access_token": new_access_token
+        }), 200
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 401

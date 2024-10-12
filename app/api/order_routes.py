@@ -14,8 +14,8 @@ def checkout():
         return jsonify({
             "message": "Order placed successfully!",
             "order_id": payment_data['order'].id,
-            "razorpay_order_id": payment_data['razorpay_order_id'],
-            "total_amount": payment_data['total_amount'],
+            # "razorpay_order_id": payment_data['razorpay_order_id'],
+            "total_amount": payment_data['total_amo unt'],
         }), 201
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
