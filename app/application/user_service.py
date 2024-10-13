@@ -16,6 +16,7 @@ class UserService:
 
         password_hash = AuthService.hash_password(password)
         new_user = User(username=username, email=email, password_hash=password_hash)
+        new_user.set_last_password_change()
         UserRepository.add(new_user)
         return new_user
 
@@ -31,4 +32,13 @@ class UserService:
 
         return {"access_token": access_token, "refresh_token": refresh_token}
 
+    @staticmethod
+    def change_password(user_id, old_password, new_password, token):
+        user = UserRepository.get_by_id(user_id)
+        if not user or not AuthService.check_password(old_password, user.password_hash):
+            raise ValueError("Invalid email or password.")
+        user.set_password(new_password)
+        user.set_last_password_change()
+        UserRepository.update_user()
+        AuthService.blacklist_token(token)
 

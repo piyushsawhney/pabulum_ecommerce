@@ -4,10 +4,9 @@ from flask import Blueprint, request, jsonify
 from marshmallow import ValidationError
 
 from app.api.auth_middleware import token_required
-from app.api.schemas.user_schema import RegisterSchema, LoginSchema
+from app.api.schemas.user_schema import RegisterSchema, LoginSchema, PasswordChangeSchema
 from app.application.auth_service import AuthService
 from app.application.user_service import UserService
-from app.domain.models.blacklist import BlacklistToken
 
 user_bp = Blueprint('user', __name__)
 
@@ -83,5 +82,31 @@ def logout():
         AuthService.blacklist_token(token=token)
         return jsonify({"message": "Successfully logged out."}), 200
 
+    except Exception as e:
+        return jsonify({"error": "Failed to log out."}), 500
+
+
+@user_bp.route('/change_password', methods=['POST'])
+@token_required
+def change_password():
+    """API endpoint to change the user's password"""
+    user_id = request.user_id  # Extract user_id from the token
+    token = request.headers.get('Authorization').split(" ")[1]  # Get token from the header
+
+    # Load and validate the input data using the PasswordChangeSchema
+    try:
+        data = PasswordChangeSchema().load(request.json)
+    except ValidationError as err:
+        return jsonify({"errors": err.messages}), 400
+
+    current_password = data.get('current_password')
+    new_password = data.get('new_password')
+
+    try:
+        UserService.change_password(user_id=user_id, old_password=current_password, new_password=new_password,
+                                    token=token)
+        return jsonify({"message": "Password updated successfully. Please log in again."}), 200
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 401
     except Exception as e:
         return jsonify({"error": "Failed to log out."}), 500

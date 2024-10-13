@@ -1,12 +1,16 @@
 # app/api/order_routes.py
 
 from flask import Blueprint, request, jsonify
+
+from app.api.auth_middleware import token_required
 from app.application.order_service import OrderService
 from app.infrastructure.order_repository import OrderRepository
 
 order_bp = Blueprint('order', __name__)
 
+
 @order_bp.route('/checkout', methods=['POST'])
+@token_required
 def checkout():
     user_id = request.user_id
     try:
@@ -19,6 +23,7 @@ def checkout():
         }), 201
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
+
 
 @order_bp.route('/payment/success', methods=['POST'])
 def payment_success():

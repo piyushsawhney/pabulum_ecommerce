@@ -9,3 +9,4 @@ flask_migrate
 flask-bcrypt
 python-dotenv
 PyJWT
+pytz

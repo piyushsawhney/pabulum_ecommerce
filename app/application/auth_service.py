@@ -2,7 +2,7 @@
 
 import datetime
 import os
-
+import pytz
 import bcrypt
 import jwt
 from dotenv import load_dotenv
@@ -10,6 +10,7 @@ from flask import jsonify
 
 from app.domain.models.blacklist import BlacklistToken
 from app.infrastructure.auth_repository import AuthRepository
+from app.infrastructure.user_repository import UserRepository
 
 # Load environment variables
 load_dotenv()
@@ -53,6 +54,12 @@ class AuthService:
         try:
             # Decode JWT, returns the decoded payload
             decoded = jwt.decode(token, secret_key, algorithms=['HS256'])
+            user = UserRepository.get_by_id(decoded['user_id'])
+            issued_at = datetime.datetime.fromtimestamp(decoded.get('exp'), datetime.UTC)
+            # Check if token was issued before the last password change
+            if user.last_password_change and issued_at < pytz.utc.localize(user.last_password_change):
+                return jsonify({'message': 'Token invalid due to password change. Please log in again.'}), 401
+
             # Check if the token is blacklisted
             if BlacklistToken.check_blacklist(token):
                 return jsonify({'message': 'Token has been blacklisted. Please log in again.'}), 401

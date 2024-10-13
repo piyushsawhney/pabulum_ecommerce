@@ -19,3 +19,7 @@ class UserRepository:
     @staticmethod
     def get_by_id(id):
         return User.query.filter_by(id=id).first()
+
+    @staticmethod
+    def update_user():
+        db.session.commit()

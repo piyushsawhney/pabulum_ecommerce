@@ -5,11 +5,11 @@ from flask import Flask, jsonify
 from flask_migrate import Migrate
 from marshmallow import ValidationError
 
-from app.api.cart_routes import cart_bp
-from app.api.menu_routes import menu_bp
-from app.api.order_routes import order_bp
+from app.api.routes.cart_routes import cart_bp
+from app.api.routes.menu_routes import menu_bp
+from app.api.routes.order_routes import order_bp
 from app.api.secure_routes import secure_bp
-from app.api.user_routes import user_bp
+from app.api.routes.user_routes import user_bp
 from app.infrastructure.db import db
 from config import Config
 
