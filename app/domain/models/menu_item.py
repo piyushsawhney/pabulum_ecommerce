@@ -2,6 +2,7 @@
 
 from app.infrastructure.db import db
 
+
 class MenuItem(db.Model):
     __tablename__ = 'menu_items'
 
@@ -9,6 +10,7 @@ class MenuItem(db.Model):
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.String(255), nullable=True)
     price = db.Column(db.Float, nullable=False)
+    is_available = db.Column(db.Boolean, nullable=False, default=True)
 
     def __repr__(self):
         return f'<MenuItem {self.name}>'

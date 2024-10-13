@@ -1,4 +1,4 @@
-# app/api/schemas.py
+# app/api/user_schema.py
 
 from marshmallow import Schema, fields, validates, ValidationError
 import re

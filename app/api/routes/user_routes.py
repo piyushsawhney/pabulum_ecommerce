@@ -3,7 +3,7 @@
 from flask import Blueprint, request, jsonify
 from marshmallow import ValidationError
 
-from app.api.schemas import RegisterSchema, LoginSchema
+from app.api.schemas.user_schema import RegisterSchema, LoginSchema
 from app.application.auth_service import AuthService
 from app.application.user_service import UserService
 
@@ -20,7 +20,6 @@ def register():
     username = data.get('username')
     email = data.get('email')
     password = data.get('password')
-    role = data.get('role', 'Customer')
 
     try:
         user = UserService.register_user(

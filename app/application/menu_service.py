@@ -5,8 +5,8 @@ from app.infrastructure.menu_repository import MenuItemRepository
 
 class MenuService:
     @staticmethod
-    def add_menu_item(name, description, price):
-        new_item = MenuItem(name=name, description=description, price=price)
+    def add_menu_item(name, description, price, is_available):
+        new_item = MenuItem(name=name, description=description, price=price, is_available=is_available)
         MenuItemRepository.add(new_item)
         return new_item
 
@@ -19,15 +19,17 @@ class MenuService:
         return MenuItemRepository.get_by_id(item_id)
 
     @staticmethod
-    def update_menu_item(item_id, name=None, description=None, price=None):
+    def update_menu_item(item_id, name=None, description=None, price=None, is_available=None):
         item = MenuItemRepository.get_by_id(item_id)
         if item:
             if name:
-                item.username = name
+                item.name = name
             if description:
                 item.description = description
             if price is not None:
                 item.price = price
+            if is_available is not None:
+                item.is_available = is_available
             MenuItemRepository.update(item)
             return item
         else:
