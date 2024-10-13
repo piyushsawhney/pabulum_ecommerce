@@ -6,6 +6,10 @@ import os
 import bcrypt
 import jwt
 from dotenv import load_dotenv
+from flask import jsonify
+
+from app.domain.models.blacklist import BlacklistToken
+from app.infrastructure.auth_repository import AuthRepository
 
 # Load environment variables
 load_dotenv()
@@ -49,8 +53,16 @@ class AuthService:
         try:
             # Decode JWT, returns the decoded payload
             decoded = jwt.decode(token, secret_key, algorithms=['HS256'])
+            # Check if the token is blacklisted
+            if BlacklistToken.check_blacklist(token):
+                return jsonify({'message': 'Token has been blacklisted. Please log in again.'}), 401
+
             return decoded
         except jwt.ExpiredSignatureError:
             raise ValueError("Token has expired.")
         except jwt.InvalidTokenError:
             raise ValueError("Invalid token.")
+
+    @staticmethod
+    def blacklist_token(token):
+        AuthRepository.add(token)

@@ -3,9 +3,11 @@
 from flask import Blueprint, request, jsonify
 from marshmallow import ValidationError
 
+from app.api.auth_middleware import token_required
 from app.api.schemas.user_schema import RegisterSchema, LoginSchema
 from app.application.auth_service import AuthService
 from app.application.user_service import UserService
+from app.domain.models.blacklist import BlacklistToken
 
 user_bp = Blueprint('user', __name__)
 
@@ -69,3 +71,17 @@ def refresh_token():
         }), 200
     except ValueError as e:
         return jsonify({"error": str(e)}), 401
+
+
+@user_bp.route('/logout', methods=['POST'])
+@token_required
+def logout():
+    """Log out the user and blacklist the token"""
+    token = request.headers.get('Authorization').split(" ")[1]  # Get token from the header
+
+    try:
+        AuthService.blacklist_token(token=token)
+        return jsonify({"message": "Successfully logged out."}), 200
+
+    except Exception as e:
+        return jsonify({"error": "Failed to log out."}), 500

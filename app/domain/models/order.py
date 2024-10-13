@@ -1,7 +1,7 @@
 # app/domain/order.py
+import datetime
 
 from app.infrastructure.db import db
-from datetime import datetime
 
 
 class Order(db.Model):
@@ -10,7 +10,7 @@ class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     total_amount = db.Column(db.Float, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.UTC))
     razorpay_order_id = db.Column(db.String(255), nullable=True)  # To store Razorpay Order ID
     status = db.Column(db.String(50), default="pending")  # Track order status like 'paid', 'pending', etc.
 

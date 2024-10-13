@@ -30,3 +30,5 @@ class UserService:
         refresh_token = AuthService.generate_jwt(user.id, user.role, is_refresh=True)
 
         return {"access_token": access_token, "refresh_token": refresh_token}
+
+

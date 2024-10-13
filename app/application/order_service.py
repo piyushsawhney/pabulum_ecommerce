@@ -41,7 +41,7 @@ class OrderService:
             order_items.append(order_item)
 
         # Convert the amount to paise (since Razorpay deals with the smallest currency unit)
-        amount_in_paise = int(total_amount * 100)
+        # amount_in_paise = int(total_amount * 100)
 
         # # Create Razorpay order
         # payment_order = OrderService.razorpay_client.order.create({

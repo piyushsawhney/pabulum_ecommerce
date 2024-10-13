@@ -21,6 +21,7 @@ def token_required(f):
 
         try:
             decoded = AuthService.decode_jwt(token)
+
         except ValueError as e:
             return jsonify({"error": str(e)}), 401
         request.user_id = decoded['user_id']

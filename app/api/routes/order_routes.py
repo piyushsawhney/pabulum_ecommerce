@@ -8,14 +8,14 @@ order_bp = Blueprint('order', __name__)
 
 @order_bp.route('/checkout', methods=['POST'])
 def checkout():
-    user_id = request.args.get('user_id')  # For demo purposes, we use query params for user ID
+    user_id = request.user_id
     try:
         payment_data = OrderService.checkout(user_id)
         return jsonify({
             "message": "Order placed successfully!",
             "order_id": payment_data['order'].id,
             # "razorpay_order_id": payment_data['razorpay_order_id'],
-            "total_amount": payment_data['total_amo unt'],
+            "total_amount": payment_data['total_amount'],
         }), 201
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
