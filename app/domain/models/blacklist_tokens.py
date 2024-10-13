@@ -1,6 +1,6 @@
-# app/domain/models/blacklist.py
+# app/domain/models/blacklist_tokens.py
 
-from datetime import datetime
+import datetime
 
 from app.infrastructure.db import db
 
@@ -16,7 +16,7 @@ class BlacklistToken(db.Model):
 
     def __init__(self, token):
         self.token = token
-        self.blacklisted_on = datetime.utcnow()
+        self.blacklisted_on = datetime.datetime.now(datetime.UTC)
 
     def __repr__(self):
         return f'<BlacklistToken token={self.token}>'
@@ -28,3 +28,6 @@ class BlacklistToken(db.Model):
         if res:
             return True  # token is blacklisted
         return False
+
+    def set_blacklisted_on(self, blacklisted_on):
+        self.blacklisted_on = blacklisted_on

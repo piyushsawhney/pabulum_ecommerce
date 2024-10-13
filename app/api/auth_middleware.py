@@ -21,10 +21,10 @@ def token_required(f):
 
         try:
             decoded = AuthService.decode_jwt(token)
-
+            request.user_id = decoded['user_id']
         except ValueError as e:
             return jsonify({"error": str(e)}), 401
-        request.user_id = decoded['user_id']
+
         return f(*args, **kwargs)
 
     return decorated

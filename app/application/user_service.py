@@ -2,6 +2,7 @@
 
 
 from app.application.auth_service import AuthService
+from app.domain.models.blacklist_tokens import BlacklistToken
 from app.domain.models.user import User
 from app.infrastructure.user_repository import UserRepository
 
@@ -37,8 +38,10 @@ class UserService:
         user = UserRepository.get_by_id(user_id)
         if not user or not AuthService.check_password(old_password, user.password_hash):
             raise ValueError("Invalid email or password.")
-        user.set_password(new_password)
-        user.set_last_password_change()
+        new_hashed_password = AuthService.hash_password(new_password)
+        user.set_password_hash(new_hashed_password)
+        timestamp = user.set_last_password_change()
         UserRepository.update_user()
-        AuthService.blacklist_token(token)
-
+        blacklist_token = BlacklistToken(token=token)
+        blacklist_token.set_blacklisted_on(timestamp)
+        AuthService.blacklist_token(blacklist_token)

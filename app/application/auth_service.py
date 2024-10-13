@@ -8,7 +8,7 @@ import jwt
 from dotenv import load_dotenv
 from flask import jsonify
 
-from app.domain.models.blacklist import BlacklistToken
+from app.domain.models.blacklist_tokens import BlacklistToken
 from app.infrastructure.auth_repository import AuthRepository
 from app.infrastructure.user_repository import UserRepository
 
@@ -71,5 +71,5 @@ class AuthService:
             raise ValueError("Invalid token.")
 
     @staticmethod
-    def blacklist_token(token):
-        AuthRepository.add(token)
+    def blacklist_token(blacklist_token):
+        AuthRepository.add(blacklist_token)

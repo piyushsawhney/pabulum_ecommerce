@@ -3,6 +3,7 @@ import datetime
 
 from app.infrastructure.db import db
 
+
 class User(db.Model):
     __tablename__ = 'users'
 
@@ -23,10 +24,15 @@ class User(db.Model):
         self.email = email
         self.password_hash = password_hash
         self.role = role
-    
+
     def __repr__(self):
         return f'<User {self.username}>'
 
     def set_last_password_change(self):
         """Hashes and sets the password, and updates the last_password_change timestamp"""
         self.last_password_change = datetime.datetime.now(datetime.UTC)
+        return self.last_password_change
+
+    def set_password_hash(self, password_hash):
+        self.password_hash = password_hash
+

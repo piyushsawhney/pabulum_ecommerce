@@ -7,6 +7,7 @@ from app.api.auth_middleware import token_required
 from app.api.schemas.user_schema import RegisterSchema, LoginSchema, PasswordChangeSchema
 from app.application.auth_service import AuthService
 from app.application.user_service import UserService
+from app.domain.models.blacklist_tokens import BlacklistToken
 
 user_bp = Blueprint('user', __name__)
 
@@ -72,21 +73,21 @@ def refresh_token():
         return jsonify({"error": str(e)}), 401
 
 
-@user_bp.route('/logout', methods=['POST'])
+@user_bp.route('/user/logout', methods=['POST'])
 @token_required
 def logout():
     """Log out the user and blacklist the token"""
     token = request.headers.get('Authorization').split(" ")[1]  # Get token from the header
 
     try:
-        AuthService.blacklist_token(token=token)
+        AuthService.blacklist_token(BlacklistToken(token=token))
         return jsonify({"message": "Successfully logged out."}), 200
 
     except Exception as e:
         return jsonify({"error": "Failed to log out."}), 500
 
 
-@user_bp.route('/change_password', methods=['POST'])
+@user_bp.route('/user/change_password', methods=['POST'])
 @token_required
 def change_password():
     """API endpoint to change the user's password"""
