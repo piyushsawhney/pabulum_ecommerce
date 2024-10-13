@@ -1,7 +1,9 @@
 # app/api/auth_middleware.py
 
 from functools import wraps
+
 from flask import request, jsonify
+
 from app.application.auth_service import AuthService
 from app.infrastructure.user_repository import UserRepository
 
@@ -18,11 +20,11 @@ def token_required(f):
             return jsonify({"error": "Token is missing!"}), 401
 
         try:
-            user_id = AuthService.decode_jwt(token)
+            decoded = AuthService.decode_jwt(token)
         except ValueError as e:
             return jsonify({"error": str(e)}), 401
-
-        return f(user_id=user_id, *args, **kwargs)
+        request.user_id = decoded['user_id']
+        return f(*args, **kwargs)
 
     return decorated
 

@@ -27,7 +27,7 @@ class AuthService:
     def generate_jwt(user_id, role, is_refresh=False):
         """Generate JWT token (access or refresh) with expiration."""
         secret_key = os.getenv("JWT_SECRET")
-        expiration = datetime. datetime. now(datetime. UTC) + (
+        expiration = datetime.datetime.now(datetime.UTC) + (
             datetime.timedelta(minutes=15) if not is_refresh else datetime.timedelta(days=30)
         )
         payload = {
