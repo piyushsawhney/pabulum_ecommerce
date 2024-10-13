@@ -1,4 +1,4 @@
-from app.domain.models.order import Order
+from app.domain.models.orders import Order
 from app.infrastructure.db import db
 
 

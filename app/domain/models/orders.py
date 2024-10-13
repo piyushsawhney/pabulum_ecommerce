@@ -1,4 +1,4 @@
-# app/domain/order.py
+# app/domain/orders.py
 import datetime
 
 from app.infrastructure.db import db

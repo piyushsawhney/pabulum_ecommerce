@@ -1,4 +1,4 @@
-from app.domain.models.cart_item import CartItem
+from app.domain.models.cart_items import CartItem
 from app.infrastructure.db import db
 
 

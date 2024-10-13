@@ -1,5 +1,5 @@
 # app/application/cart_service.py
-from app.domain.models.cart_item import CartItem
+from app.domain.models.cart_items import CartItem
 from app.infrastructure.cart_repository import CartRepository
 
 

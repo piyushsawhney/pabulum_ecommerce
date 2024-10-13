@@ -1,4 +1,4 @@
-# app/domain/cart_item.py
+# app/domain/cart_items.py
 
 from app.infrastructure.db import db
 

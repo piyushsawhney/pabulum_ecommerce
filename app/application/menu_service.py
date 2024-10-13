@@ -1,5 +1,5 @@
 # app/application/menu_service.py
-from app.domain.models.menu_item import MenuItem
+from app.domain.models.menu_items import MenuItem
 from app.infrastructure.menu_repository import MenuItemRepository
 
 

@@ -4,8 +4,8 @@ import hmac
 
 import razorpay
 
-from app.domain.models.menu_item import MenuItem
-from app.domain.models.order import Order, OrderItem
+from app.domain.models.menu_items import MenuItem
+from app.domain.models.orders import Order, OrderItem
 from app.infrastructure.cart_repository import CartRepository
 from app.infrastructure.order_repository import OrderRepository
 from config import Config

@@ -3,7 +3,7 @@
 
 from app.application.auth_service import AuthService
 from app.domain.models.blacklist_tokens import BlacklistToken
-from app.domain.models.user import User
+from app.domain.models.users import User
 from app.infrastructure.user_repository import UserRepository
 
 

@@ -1,5 +1,5 @@
 # app/infrastructure/repositories.py
-from app.domain.models.user import User
+from app.domain.models.users import User
 from app.infrastructure.db import db
 
 class UserRepository:
