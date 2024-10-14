@@ -1,0 +1,225 @@
+{
+    "info": {
+        "_postman_id": "unique-id",
+        "name": "User Authentication with Variables and Error Handling",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Register User",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\"username\":\"newuser\",\"email\":\"newuser@example.com\",\"password\":\"password123\",\"confirmPassword\":\"password123\"}"
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/register",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "register"
+                    ]
+                }
+            },
+            "response": [
+                {
+                    "code": 201,
+                    "name": "User Registered",
+                    "header": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "body": "{\"message\":\"User registered successfully\",\"user\":{\"userId\":\"12345\",\"username\":\"newuser\",\"email\":\"newuser@example.com\"}}",
+                    "status": "Created"
+                },
+                {
+                    "code": 400,
+                    "name": "User Registration Failed - User Exists",
+                    "header": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "body": "{\"error\":\"User already exists\"}",
+                    "status": "Bad Request"
+                }
+            ],
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "// Parse the response JSON",
+                            "var jsonData = pm.response.json();",
+                            "",
+                            "// Check if user is registered",
+                            "if (pm.response.code === 201) {",
+                            "    pm.environment.set(\"userId\", jsonData.user.userId);",
+                            "    pm.environment.set(\"username\", jsonData.user.username);",
+                            "    console.log('User ID and Username stored');",
+                            "} else if (pm.response.code === 400) {",
+                            "    console.log('Error: ' + jsonData.error);",
+                            "}"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Login User",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\"username\":\"{{username}}\",\"password\":\"password123\"}"
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/login",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "login"
+                    ]
+                }
+            },
+            "response": [
+                {
+                    "code": 200,
+                    "name": "Login Success",
+                    "header": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "body": "{\"message\":\"Login successful\",\"token\":\"abcdef123456\"}",
+                    "status": "OK"
+                },
+                {
+                    "code": 401,
+                    "name": "Login Failed - Invalid Credentials",
+                    "header": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "body": "{\"error\":\"Invalid username or password\"}",
+                    "status": "Unauthorized"
+                }
+            ],
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "// Parse the response JSON",
+                            "var jsonData = pm.response.json();",
+                            "",
+                            "// Check if login was successful",
+                            "if (pm.response.code === 200) {",
+                            "    pm.environment.set(\"authToken\", jsonData.token);",
+                            "    console.log('Auth token stored');",
+                            "} else if (pm.response.code === 401) {",
+                            "    console.log('Login Failed: ' + jsonData.error);",
+                            "}"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Get User Profile",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{authToken}}",
+                        "type": "text"
+                    }
+                ],
+                "url": {
+                    "raw": "{{baseUrl}}/user/{{userId}}",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "user",
+                        "{{userId}}"
+                    ]
+                }
+            },
+            "response": [
+                {
+                    "code": 200,
+                    "name": "Get Profile Success",
+                    "header": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "body": "{\"message\":\"User profile retrieved successfully\",\"user\":{\"userId\":\"{{userId}}\",\"username\":\"newuser\",\"email\":\"newuser@example.com\"}}",
+                    "status": "OK"
+                },
+                {
+                    "code": 404,
+                    "name": "User Not Found",
+                    "header": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "body": "{\"error\":\"User not found\"}",
+                    "status": "Not Found"
+                }
+            ],
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "// Parse the response JSON",
+                            "var jsonData = pm.response.json();",
+                            "",
+                            "// Check if user profile is found",
+                            "if (pm.response.code === 200) {",
+                            "    console.log('User profile retrieved successfully');",
+                            "} else if (pm.response.code === 404) {",
+                            "    console.log('Error: ' + jsonData.error);",
+                            "}"
+                        ]
+                    }
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "https://api.example.com"
+        }
+    ]
+}
